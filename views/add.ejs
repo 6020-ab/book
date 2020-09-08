@@ -15,7 +15,7 @@
     <hr>
     <h1>Patient records</h1>
     <hr>
-
+<!--Collects entered data and stores it in 'Patients array'-->
     <form action="http://localhost:8080/patients" method="POST">
         <!--Name-->
         <div class="form-group">
@@ -24,21 +24,21 @@
         </div>
         <!--Age-->
         <div class="form-group">
-            <label for="Names">Age(in months):</label>
+            <label for="Age">Age(in months):</label>
             <input class="form-control" name = "age">
         </div>
         <!--Height-->
         <div class="form-group">
-            <label for="ISBN">Height(in cm):</label>
+            <label for="Height">Height(in cm):</label>
             <input class="form-control" name ="Height">
         </div>
         <!--Notes-->
         <div class="form-group">
-            <label for="ISBN">Notes:</label>
+            <label for="Notes">Notes:</label>
             <input class="form-control" name ="Notes">
         </div>
 
-        <button type="submit" class="btn btn-primary">Add New</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
         <form action="http://localhost:8080/" method="GET">
         

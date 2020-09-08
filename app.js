@@ -5,53 +5,72 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.set('view engine', 'ejs');
 
-app.set('view-engine', 'ejs');
 
 // Patient Records> /patients
 // Patient/age > /patients/id/age
 // 
 
-
+//create 'database' to post patient records
 const patients = [{ 
-    id : 1, 
-    name : "Sarah", 
-    age : "34", 
-    Height : "165", 
-    Notes: "has nuts allergy" }];
-    
+    id: 1, 
+    name: "Sarah",  
+    age: "34", 
+    Height: "165",
+    Notes: "has nuts allergy"
+}];
+
+// l0op to work on displaying  the patients details to be show on the website
+for (i= 0; i< patients.length; i++){
+
+
+    console.log(patients[i]);
+}
+
+
+
+
     app.use(cors());
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
 
 
-//READ Request Handlers
+//HomePage
 app.get('/', (req, res) => {
     res.render('home.ejs');
     });
 
+//Add New Patient
 app.get('/patients/add', (req, res) => {
     res.render('add.ejs');
     });
-
+//View Patient Records
 app.get('/patients/view', (req, res) => {
-    res.render('index.ejs');
+    res.render("index.ejs",  {array: patients} );
+//    console.log(patients);
+    });
+//Edit Patient Records
+app.get('/patients/view/edit', (req, res) => {
+    res.render('edit.ejs');
     });
 
-//READ Request Handlers
+
+//Handler to view patient records in JSON format [READ Operation]
 app.get('/patients', (req, res) => {
     res.send(patients);
        });
 
 
-//READ Request Handlers :find Patiend records
+//Handlers to find Patient records in JSON format [READ Operation]
 app.get('/patients/:id', (req, res) => {
  let patient = patients.find(c => c.id === parseInt(req.params.id));
  if(!patient) res.status(404).send('The patient with the given ID was not found');
  res.send(patient);
     });
 
-//POST Request Handlers : Add new patient record
+//Handler to add new patient record [CREATE Operation]
 app.post('/patients', (req, res) =>{
     const { error } = validatePatient(req.body);
 
@@ -69,22 +88,21 @@ app.post('/patients', (req, res) =>{
     Notes: req.body.Notes
 
 };
-console.log(patient);
+//console.log(patient);
   patients.push(patient);
   res.render('updated.ejs');
 
 })
 
-//PUT Request Handlers :update Patient records
+// Handler to update/edit Patient records [UPDATE Operation]
 app.put('/patients/:id', (req, res) => {
-//look up patient records
-//if it doesn't exist, 404
+
+    //look up patient records,if it doesn't exist, 404
 const patient = patients.find(c => c.id === parseInt(req.params.id));
  if(!patient) res.status(404).send('The patient with the given ID was not found');
 
 
 //Validate it
-//const result = validatePatient(req.body);
 const { error } = validatePatient(req.body);
 
 if (error) {
@@ -99,11 +117,14 @@ patient.age=req.body.age;
 patient.Height=req.body.Height;
 patient.Notes=req.body.Notes;
 
+
+
 patients.push(patient);
 res.render('updated.ejs');
+res.render('patient')
 });
 
-//DELETE Handler : Delete patient records
+// Handler to delete patient records [DELETE Operation]
 app.delete('/patients/:id', (req, res) =>{
     //Look up course
     //if not exist, 404
@@ -119,7 +140,7 @@ app.delete('/patients/:id', (req, res) =>{
     });
 
 
-//Separate function
+// Function to validate Patient record array
 function validatePatient(patient){
     const schema = Joi.object({
         name: Joi.string(),
